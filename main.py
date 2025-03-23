@@ -56,16 +56,23 @@ def run_script(name):
         return
 
     path = script["path"]
-    cmd = []
+    base_cmd = []
+
     if script["type"] == "python":
-        cmd = ["python3", path]
+        base_cmd = ["python3", path]
     elif script["type"] == "bash":
-        cmd = ["bash", path]
+        base_cmd = ["bash", path]
     elif script["type"] == "node":
-        cmd = ["node", path]
+        base_cmd = ["node", path]
+
+    # Prompt for optional args
+    user_args = Prompt.ask("Enter any arguments (leave blank for none)", default="").strip()
+    args = user_args.split() if user_args else []
+
+    full_cmd = base_cmd + args
 
     with console.status(f"[blue]Running {name}...[/]", spinner="dots"):
-        subprocess.run(cmd)
+        subprocess.run(full_cmd)
 
 def run_picker():
     config = load_config()
